@@ -42,4 +42,4 @@ This app is tailor-made for GitHub Pages since it consists only of Static files.
 - **Vanilla JavaScript** (Browser DOM manipulation, mathematically accurate algorithms, LocalStorage parsing)
 
 ---
-*GraviPay App v1.0.0. Created by Yohana Sri Rejeki*
+*GraviPay App v1.1.0. Created by Yohana Sri Rejeki*
