@@ -24,7 +24,8 @@ function getEmptyState() {
             date: new Date().toISOString().split('T')[0],
             hostName: "",
             hostInfo: "",
-            platform: "Dine-in",
+            category: "Dining / Food",
+            platform: "Manual",
             taxValue: 0,
             taxType: "%",
             serviceValue: 0,
@@ -275,15 +276,24 @@ function renderSessionSetup() {
                     <input type="date" value="${state.session.date}" onchange="updateSession('date', this.value)">
                 </div>
                 <div class="input-group" style="flex:1; min-width: 140px;">
-                    <label>Category</label>
+                    <label>Purpose</label>
+                    <select onchange="updateSession('category', this.value)">
+                        <option value="Dining / Food" ${state.session.category === 'Dining / Food' ? 'selected' : ''}>Dining / Food</option>
+                        <option value="Transport / Ride" ${state.session.category === 'Transport / Ride' ? 'selected' : ''}>Transport / Ride</option>
+                        <option value="Groceries" ${state.session.category === 'Groceries' ? 'selected' : ''}>Groceries</option>
+                        <option value="Travel / Hotel" ${state.session.category === 'Travel / Hotel' ? 'selected' : ''}>Travel / Hotel</option>
+                        <option value="Utilities / Bills" ${state.session.category === 'Utilities / Bills' ? 'selected' : ''}>Utilities / Bills</option>
+                        <option value="Shopping" ${state.session.category === 'Shopping' ? 'selected' : ''}>Shopping</option>
+                        <option value="Other" ${state.session.category === 'Other' ? 'selected' : ''}>Other</option>
+                    </select>
+                </div>
+                <div class="input-group" style="flex:1; min-width: 140px;">
+                    <label>Platform / App</label>
                     <select onchange="updateSession('platform', this.value)">
-                        <option value="Dining / Food" ${state.session.platform === 'Dining / Food' ? 'selected' : ''}>Dining / Food</option>
-                        <option value="Transport / Ride" ${state.session.platform === 'Transport / Ride' ? 'selected' : ''}>Transport / Ride</option>
-                        <option value="Groceries" ${state.session.platform === 'Groceries' ? 'selected' : ''}>Groceries</option>
-                        <option value="Travel / Hotel" ${state.session.platform === 'Travel / Hotel' ? 'selected' : ''}>Travel / Hotel</option>
-                        <option value="Utilities / Bills" ${state.session.platform === 'Utilities / Bills' ? 'selected' : ''}>Utilities / Bills</option>
-                        <option value="Shopping" ${state.session.platform === 'Shopping' ? 'selected' : ''}>Shopping</option>
-                        <option value="Other" ${state.session.platform === 'Other' ? 'selected' : ''}>Other</option>
+                        <option value="Manual" ${state.session.platform === 'Manual' ? 'selected' : ''}>Manual / Generic</option>
+                        <option value="Grab" ${state.session.platform === 'Grab' ? 'selected' : ''}>Grab</option>
+                        <option value="Gojek" ${state.session.platform === 'Gojek' ? 'selected' : ''}>Gojek</option>
+                        <option value="Shopee" ${state.session.platform === 'Shopee' ? 'selected' : ''}>Shopee</option>
                     </select>
                 </div>
             </div>
@@ -409,6 +419,73 @@ function renderCharges() {
         </select>
     `;
 
+    const p = state.session.platform;
+    if (p === 'Grab') {
+        return `
+            <div class="card fade-in" style="animation-delay: 0.3s">
+                <h2>5. Grab Fees</h2>
+                <div class="flex-row flex-wrap mb-2">
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Delivery Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.deliveryFee || 0}" style="margin:0;" onchange="updateSession('deliveryFee', parseFloat(this.value)||0)">
+                    </div>
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Order Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.orderFee || 0}" style="margin:0;" onchange="updateSession('orderFee', parseFloat(this.value)||0)">
+                    </div>
+                </div>
+                <div class="flex-row flex-wrap">
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Resto Packaging (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.restoPackagingFee || 0}" style="margin:0;" onchange="updateSession('restoPackagingFee', parseFloat(this.value)||0)">
+                    </div>
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Tip (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.tipFee || 0}" style="margin:0;" onchange="updateSession('tipFee', parseFloat(this.value)||0)">
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (p === 'Gojek') {
+        return `
+            <div class="card fade-in" style="animation-delay: 0.3s">
+                <h2>5. Gojek Fees</h2>
+                <div class="flex-row flex-wrap mb-2">
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Handling Delivery Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.handlingFee || 0}" style="margin:0;" onchange="updateSession('handlingFee', parseFloat(this.value)||0)">
+                    </div>
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Other Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.otherFee || 0}" style="margin:0;" onchange="updateSession('otherFee', parseFloat(this.value)||0)">
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (p === 'Shopee') {
+        return `
+            <div class="card fade-in" style="animation-delay: 0.3s">
+                <h2>5. Shopee Fees</h2>
+                <div class="flex-row flex-wrap mb-2">
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Delivery Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.deliveryFee || 0}" style="margin:0;" onchange="updateSession('deliveryFee', parseFloat(this.value)||0)">
+                    </div>
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Service Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.shopeeServiceFee || 0}" style="margin:0;" onchange="updateSession('shopeeServiceFee', parseFloat(this.value)||0)">
+                    </div>
+                </div>
+                <div class="flex-row flex-wrap">
+                    <div class="input-group" style="flex:1; min-width:120px; margin:0;">
+                        <label class="text-sm mb-1">Other Fee (Rp)</label>
+                        <input type="number" step="1000" value="${state.session.otherFee || 0}" style="margin:0;" onchange="updateSession('otherFee', parseFloat(this.value)||0)">
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     return `
         <div class="card fade-in" style="animation-delay: 0.3s">
             <h2>5. Extra Fees & Tax</h2>
@@ -417,23 +494,23 @@ function renderCharges() {
                     <div class="flex-row space-between items-center text-sm mb-1">
                         <span>Tax/VAT</span> ${renderTypeSelect('taxType')}
                     </div>
-                    <input type="number" step="0.1" value="${state.session.taxValue}" style="margin:0;" onchange="updateSession('taxValue', parseFloat(this.value)||0)">
+                    <input type="number" step="0.1" value="${state.session.taxValue || 0}" style="margin:0;" onchange="updateSession('taxValue', parseFloat(this.value)||0)">
                 </div>
                 <div class="input-group" style="flex:1; min-width:120px; margin:0;">
                     <div class="flex-row space-between items-center text-sm mb-1">
                         <span>Svc/Admin</span> ${renderTypeSelect('serviceType')}
                     </div>
-                    <input type="number" step="0.1" value="${state.session.serviceValue}" style="margin:0;" onchange="updateSession('serviceValue', parseFloat(this.value)||0)">
+                    <input type="number" step="0.1" value="${state.session.serviceValue || 0}" style="margin:0;" onchange="updateSession('serviceValue', parseFloat(this.value)||0)">
                 </div>
             </div>
             <div class="flex-row flex-wrap">
                 <div class="input-group" style="flex:1; min-width:120px; margin:0;">
                     <label class="text-sm mb-1">Delivery/Shipping (Rp)</label>
-                    <input type="number" step="1000" value="${state.session.deliveryFee}" style="margin:0;" onchange="updateSession('deliveryFee', parseFloat(this.value)||0)">
+                    <input type="number" step="1000" value="${state.session.deliveryFee || 0}" style="margin:0;" onchange="updateSession('deliveryFee', parseFloat(this.value)||0)">
                 </div>
                 <div class="input-group" style="flex:1; min-width:120px; margin:0;">
                     <label class="text-sm mb-1">Platform/Misc Fee (Rp)</label>
-                    <input type="number" step="1000" value="${state.session.orderFee}" style="margin:0;" onchange="updateSession('orderFee', parseFloat(this.value)||0)">
+                    <input type="number" step="1000" value="${state.session.orderFee || 0}" style="margin:0;" onchange="updateSession('orderFee', parseFloat(this.value)||0)">
                 </div>
             </div>
         </div>
@@ -473,9 +550,12 @@ function renderSummary() {
         <div class="card fade-in" style="animation-delay: 0.4s">
             <div class="flex-row space-between items-center mb-2">
                 <h2 style="margin:0;">6. Summary & Share</h2>
-                <div class="text-xs text-right">
-                    <div>Created: ${createdAtTxt}</div>
-                    <div>Updated: ${updatedAtTxt}</div>
+                <div class="flex-row items-center gap-1">
+                    <button class="btn-sm" style="background:var(--primary)" onclick="downloadBillCSV('${state.id}', false)">Download CSV</button>
+                    <div class="text-xs text-right" style="margin-left: 0.5rem; line-height: 1.2;">
+                        <div>Created: ${createdAtTxt}</div>
+                        <div>Updated: ${updatedAtTxt}</div>
+                    </div>
                 </div>
             </div>
             <div class="flex-row space-between mb-2 p-2 rounded" style="background: var(--surface-hover)">
@@ -682,7 +762,8 @@ function renderHistoryView() {
                 
                 <div class="flex-row space-between flex-wrap">
                     <button class="btn-danger btn-sm" onclick="deleteHistoryBill('${b.id}')">Delete</button>
-                    <div class="flex-row">
+                    <div class="flex-row gap-1">
+                        <button class="btn-sm" style="background:var(--primary); color:#fff; border:1px solid transparent;" onclick="downloadBillCSV('${b.id}', true)">CSV</button>
                         ${hasUnpaid ? `<button class="btn-sm" style="background:var(--text-main); color:var(--bg-color)" onclick="copyUnpaidReminder('${b.id}', this)">Copy Unpaid Reminder</button>` : ''}
                         <button class="btn-sm" style="background:var(--success)" onclick="loadBillFromHistory('${b.id}')">Open & Edit</button>
                     </div>
@@ -736,13 +817,32 @@ function calculateBill(sourceState) {
     const netSubtotal = Math.max(0, subtotal - totalDiscount);
     let discountRatio = subtotal > 0 ? (totalDiscount / subtotal) : 0;
 
-    let totalTax = sourceState.session.taxType === '%' ? netSubtotal * (sourceState.session.taxValue / 100) : sourceState.session.taxValue;
-    let totalSvc = sourceState.session.serviceType === '%' ? netSubtotal * (sourceState.session.serviceValue / 100) : sourceState.session.serviceValue;
+    let totalTax = 0;
+    let totalSvc = 0;
+    let totalDelivery = 0;
+    let totalOrderFee = 0;
+    let extraFeesTotal = 0;
 
-    let totalDelivery = sourceState.session.deliveryFee || 0;
-    let totalOrderFee = sourceState.session.orderFee || 0;
+    let pType = sourceState.session.platform;
+    if (pType === 'Grab') {
+        totalDelivery = sourceState.session.deliveryFee || 0;
+        totalOrderFee = sourceState.session.orderFee || 0;
+        extraFeesTotal = (sourceState.session.restoPackagingFee || 0) + (sourceState.session.tipFee || 0);
+    } else if (pType === 'Gojek') {
+        totalDelivery = sourceState.session.handlingFee || 0;
+        extraFeesTotal = sourceState.session.otherFee || 0;
+    } else if (pType === 'Shopee') {
+        totalDelivery = sourceState.session.deliveryFee || 0;
+        totalSvc = sourceState.session.shopeeServiceFee || 0;
+        extraFeesTotal = sourceState.session.otherFee || 0;
+    } else {
+        totalTax = sourceState.session.taxType === '%' ? netSubtotal * (sourceState.session.taxValue / 100) : (sourceState.session.taxValue || 0);
+        totalSvc = sourceState.session.serviceType === '%' ? netSubtotal * (sourceState.session.serviceValue / 100) : (sourceState.session.serviceValue || 0);
+        totalDelivery = sourceState.session.deliveryFee || 0;
+        totalOrderFee = sourceState.session.orderFee || 0;
+    }
 
-    const grandTotal = netSubtotal + totalTax + totalSvc + totalDelivery + totalOrderFee;
+    const grandTotal = netSubtotal + totalTax + totalSvc + totalDelivery + totalOrderFee + extraFeesTotal;
 
     let taxRatio = netSubtotal > 0 ? (totalTax / netSubtotal) : 0;
     let svcRatio = netSubtotal > 0 ? (totalSvc / netSubtotal) : 0;
@@ -754,22 +854,24 @@ function calculateBill(sourceState) {
         let pDiscount = shareRatio * totalDiscount;
         let pDelivery = shareRatio * totalDelivery;
         let pOrderFee = shareRatio * totalOrderFee;
+        let pExtraFee = shareRatio * extraFeesTotal;
 
         let pNet = pSub - pDiscount;
         let pTax = pNet * taxRatio;
         let pSvc = pNet * svcRatio;
 
-        let pGrand = pNet + pTax + pSvc + pDelivery + pOrderFee;
+        let pGrand = pNet + pTax + pSvc + pDelivery + pOrderFee + pExtraFee;
 
         userTotals[pId].discount = pDiscount;
         userTotals[pId].delivery = pDelivery;
         userTotals[pId].orderFee = pOrderFee;
+        userTotals[pId].extraFee = pExtraFee;
         userTotals[pId].tax = pTax;
         userTotals[pId].svc = pSvc;
         userTotals[pId].grandTotal = pGrand;
     });
 
-    return { subtotal, netSubtotal, totalDiscount, totalTax, totalSvc, totalDelivery, totalOrderFee, grandTotal, userTotals };
+    return { subtotal, netSubtotal, totalDiscount, totalTax, totalSvc, totalDelivery, totalOrderFee, extraFeesTotal, grandTotal, userTotals };
 }
 
 function shareParticipantBill(pId, btnEl, historyMode) {
@@ -811,10 +913,29 @@ function generateReceiptText(sourceState, p) {
     text += `\nHi ${p.name},\nHere is your split:\n\n*Items*\n${itemsText}\n\n*Subtotal:* ${formatMoney(totals.subtotal)}`;
 
     if (totals.discount > 0) text += `\n*Total Discount Share:* -${formatMoney(totals.discount)}`;
-    if (totals.svc > 0) text += `\n*Svc/Admin:* ${formatMoney(totals.svc)}`;
-    if (totals.tax > 0) text += `\n*Tax:* ${formatMoney(totals.tax)}`;
-    if (totals.delivery > 0) text += `\n*Delivery:* ${formatMoney(totals.delivery)}`;
-    if (totals.orderFee > 0) text += `\n*Platform/Misc:* ${formatMoney(totals.orderFee)}`;
+    
+    let pType = sourceState.session.platform;
+    if (pType === 'Grab') {
+        if (totals.delivery > 0) text += `\n*Delivery:* ${formatMoney(totals.delivery)}`;
+        if (totals.orderFee > 0) text += `\n*Order Fee:* ${formatMoney(totals.orderFee)}`;
+        let shareRatio = b.subtotal > 0 ? (totals.subtotal / b.subtotal) : 0;
+        let pResto = shareRatio * (sourceState.session.restoPackagingFee || 0);
+        let pTip = shareRatio * (sourceState.session.tipFee || 0);
+        if (pResto > 0) text += `\n*Resto Packaging:* ${formatMoney(pResto)}`;
+        if (pTip > 0) text += `\n*Tip:* ${formatMoney(pTip)}`;
+    } else if (pType === 'Gojek') {
+        if (totals.delivery > 0) text += `\n*Handling Delivery Fee:* ${formatMoney(totals.delivery)}`;
+        if (totals.extraFee > 0) text += `\n*Other Fee:* ${formatMoney(totals.extraFee)}`;
+    } else if (pType === 'Shopee') {
+        if (totals.delivery > 0) text += `\n*Delivery Fee:* ${formatMoney(totals.delivery)}`;
+        if (totals.svc > 0) text += `\n*Service Fee:* ${formatMoney(totals.svc)}`;
+        if (totals.extraFee > 0) text += `\n*Other Fee:* ${formatMoney(totals.extraFee)}`;
+    } else {
+        if (totals.svc > 0) text += `\n*Svc/Admin:* ${formatMoney(totals.svc)}`;
+        if (totals.tax > 0) text += `\n*Tax:* ${formatMoney(totals.tax)}`;
+        if (totals.delivery > 0) text += `\n*Delivery:* ${formatMoney(totals.delivery)}`;
+        if (totals.orderFee > 0) text += `\n*Platform/Misc:* ${formatMoney(totals.orderFee)}`;
+    }
 
     text += `\n\n*Total to Pay:* ${formatMoney(totals.grandTotal)}`;
 
@@ -827,6 +948,63 @@ function generateReceiptText(sourceState, p) {
 
 function formatMoney(amount) {
     return new Intl.NumberFormat('en-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
+}
+
+function downloadBillCSV(billId, historyMode) {
+    const targetState = historyMode ? billHistory.find(h => h.id === billId) : state;
+    if (!targetState) return;
+
+    const b = calculateBill(targetState);
+    
+    let csvContent = "";
+    
+    // Metadata block
+    let title = targetState.session.title || 'Untitled Session';
+    csvContent += `Title,${title}\n`;
+    csvContent += `Date,${targetState.session.date}\n`;
+    csvContent += `Purpose,${targetState.session.category}\n`;
+    csvContent += `Platform/App,${targetState.session.platform}\n`;
+    if (targetState.session.hostName) csvContent += `Host,${targetState.session.hostName}\n`;
+    csvContent += `\n`;
+
+    // Headers
+    csvContent += "Participant,Status,Items,Subtotal,Discount Share,Tax,Service/Admin,Delivery,Platform/Misc Fee,Other Specific Fees,Grand Total\n";
+
+    targetState.participants.forEach(p => {
+        const t = b.userTotals[p.id];
+        const status = p.isPaid ? 'Paid' : 'Unpaid';
+        const itemsStr = t.items.map(i => i.name).join('; ');
+        
+        const row = [
+            `"${p.name.replace(/"/g, '""')}"`, 
+            `"${status}"`, 
+            `"${itemsStr.replace(/"/g, '""')}"`, 
+            Math.round(t.subtotal), 
+            Math.round(-t.discount), 
+            Math.round(t.tax), 
+            Math.round(t.svc), 
+            Math.round(t.delivery), 
+            Math.round(t.orderFee), 
+            Math.round(t.extraFee || 0), 
+            Math.round(t.grandTotal)
+        ].join(",");
+        csvContent += row + "\n";
+    });
+
+    csvContent += `\n"TOTALS",,,"${Math.round(b.subtotal)}","${Math.round(-b.totalDiscount)}","${Math.round(b.totalTax)}","${Math.round(b.totalSvc)}","${Math.round(b.totalDelivery)}","${Math.round(b.totalOrderFee)}","${Math.round(b.extraFeesTotal || 0)}","${Math.round(b.grandTotal)}"\n`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    let filenameDate = targetState.session.date ? targetState.session.date : new Date().toISOString().split('T')[0];
+    let safeTitle = (targetState.session.title || 'bill').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    link.setAttribute("download", `split_bill_${safeTitle}_${filenameDate}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 // ----------------- STORAGE & LIFECYCLE -----------------
@@ -874,6 +1052,8 @@ function toggleTheme() {
 function render() {
     const main = document.getElementById('main-content');
     if (!main) return;
+
+    document.documentElement.setAttribute('data-platform', state.session.platform || 'Manual');
 
     // Attach theme button to header if it doesn't exist
     const header = document.querySelector('.app-header');
