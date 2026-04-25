@@ -1,4 +1,4 @@
-# Stateless Split Bill App
+# GraviPay App
 
 A lightweight, lightning-fast, and privacy-focused web application designed to help friends and groups easily calculate and split their bills.
 
@@ -42,4 +42,4 @@ This app is tailor-made for GitHub Pages since it consists only of Static files.
 - **Vanilla JavaScript** (Browser DOM manipulation, mathematically accurate algorithms, LocalStorage parsing)
 
 ---
-*Split Bill app v1.0.0. Created by Yohana Sri Rejeki*
+*GraviPay App v1.0.0. Created by Yohana Sri Rejeki*
